@@ -48,10 +48,11 @@ And open source with a [public repository][mnrn] on GitHub.
 ### Requirement
 
 requires
-[gcc](https://gcc.gnu.org/) v5+
-[cuda-toolkit](https://developer.nvidia.com/cuda-toolkit) v8+
-[GNUmake](https://www.gnu.org/software/make/) v4+
-[OpenMP](http://www.openmp.org/) v4+ to run.
+* [gcc](https://gcc.gnu.org/) v5+
+* [cuda-toolkit](https://developer.nvidia.com/cuda-toolkit) v8+
+* [GNUmake](https://www.gnu.org/software/make/) v4+
+* [OpenMP](http://www.openmp.org/) v4+
+to run.
 
 
 ### Usage
