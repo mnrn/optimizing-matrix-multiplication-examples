@@ -6,11 +6,11 @@
 ### Environment
 
 ubuntu 16.04 LTS
-メモリ 15．6GiB
-プロセッサ intel Core i7-6700K @ 4.00GHz x 8
-グラフィック GeForce GTX 1080/PCIe/SSE2
-OS 64bit
-ディスク 232.0GB
+* メモリ 15．6GiB
+* プロセッサ intel Core i7-6700K @ 4.00GHz x 8
+* グラフィック GeForce GTX 1080/PCIe/SSE2
+* OS 64bit
+* ディスク 232.0GB
 
 ### Description
 
@@ -49,9 +49,9 @@ And open source with a [public repository][mnrn] on GitHub.
 
 requires
 [gcc](https://gcc.gnu.org/) v5+
-[cuda-toolkit](https://developer.nvidia.com/cuda-toolkit) v8
-[GNUmake](https://www.gnu.org/software/make/) v4+ to run.
-[OpenMP](http://www.openmp.org/)
+[cuda-toolkit](https://developer.nvidia.com/cuda-toolkit) v8+
+[GNUmake](https://www.gnu.org/software/make/) v4+
+[OpenMP](http://www.openmp.org/) v4+ to run.
 
 
 ### Usage
