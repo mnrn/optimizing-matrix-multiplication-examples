@@ -32,7 +32,7 @@ And open source with a [public repository][mnrn] on GitHub.
 * avx+LoopUnroll+Cache+OpenMP 6.146638(ms)
 * Cuda[GPGPU]     1.16271(ms)
 
-![benchmark](https://github.com/mnrn/dgemm/blob/master/data/benchmark2.png"benchmark")
+![benchmark](https://github.com/mnrn/dgemm/blob/master/data/benchmark2.png)
 
 ### Requirement
 
