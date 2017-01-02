@@ -69,7 +69,7 @@ int main(void)
     dim3 block(BLOCK_SIZE, BLOCK_SIZE);
 
     // GPU側の処理を起動させる
-    matrix_multiply_shared <<< grid, block >>> (d_A, d_B, d_C);
+    matrix_multiply <<< grid, block >>> (d_A, d_B, d_C);
 
     // d_Cに格納されている計算結果をh_Cへ転送する
     cudaMemcpy(h_C, d_C, sizeof(h_C), cudaMemcpyDeviceToHost);
