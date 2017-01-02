@@ -23,16 +23,18 @@ And open source with a [public repository][mnrn] on GitHub.
 
 それぞれ5回ほど試して得られた平均ベンチマークは以下のようになってます。
 
-* Normal      315.40220(ms)
+* Normal     315.40220(ms)
 * Cache      112.94790(ms)
 * OpenMP[parallelism]  87.04746(ms)
 * avx[SIMD]   65.76156(ms)
 * avx+LoopUnroll 38.81741(ms)
 * avx+LoopUnroll+Cache 18.001544(ms)
 * avx+LoopUnroll+Cache+OpenMP 6.146638(ms)
-* Cuda[GPGPU]     1.16271(ms)
+![benchmark1](https://github.com/mnrn/dgemm/blob/master/data/benchmark.png)
 
-![benchmark](https://github.com/mnrn/dgemm/blob/master/data/benchmark2.png)
+おまけ
+* Cuda[GPGPU]     1.16271(ms)
+![benchmark2](https://github.com/mnrn/dgemm/blob/master/data/benchmark2.png)
 
 ### Requirement
 
