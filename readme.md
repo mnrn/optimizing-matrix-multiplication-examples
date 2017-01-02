@@ -1,9 +1,9 @@
-# Matrix Multipl
+# Matrix Multiply
 
 ## Overview
 倍精度浮動小数点数における1024x1024型の行列積の計算のベンチマークを計ってみた.
 
-## Description
+### Description
 
 とりあえず、以下の最適化を試してみました.
 
@@ -32,8 +32,7 @@ And open source with a [public repository][mnrn] on GitHub.
 * avx+LoopUnroll+Cache+OpenMP 6.146638(ms)
 * Cuda[GPGPU]     1.16271(ms)
 
-todo: あとでPNG貼っつけ
-
+![benchmark](https://github.com/mnrn/dgemm/blob/master/data/benchmark2.png"benchmark")
 
 ### Requirement
 
