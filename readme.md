@@ -3,6 +3,15 @@
 ## Overview
 倍精度浮動小数点数における1024x1024型の行列積の計算のベンチマークを計ってみた.
 
+### Environment
+
+ubuntu 16.04 LTS
+メモリ 15．6GiB
+プロセッサ intel Core i7-6700K @ 4.00GHz x 8
+グラフィック GeForce GTX 1080/PCIe/SSE2
+OS 64bit
+ディスク 232.0GB
+
 ### Description
 
 とりあえず、以下の最適化を試してみました.
@@ -38,7 +47,11 @@ And open source with a [public repository][mnrn] on GitHub.
 
 ### Requirement
 
-requires [gcc](https://gcc.gnu.org/) v5+ ,  [cuda-toolkit](https://developer.nvidia.com/cuda-toolkit) v8+ and [GNUmake](https://www.gnu.org/software/make/) v4+ to run.
+requires
+[gcc](https://gcc.gnu.org/) v5+
+[cuda-toolkit](https://developer.nvidia.com/cuda-toolkit) v8
+[GNUmake](https://www.gnu.org/software/make/) v4+ to run.
+[OpenMP](http://www.openmp.org/)
 
 
 ### Usage
@@ -65,4 +78,5 @@ Public Domain
    [gcc]: <https://gcc.gnu.org/>
    [cuda-toolkit]: <https://developer.nvidia.com/cuda-toolkit>
    [GNUmake]: <https://www.gnu.org/software/make/>
+   [OpenMP]: <http://www.openmp.org/>
 
