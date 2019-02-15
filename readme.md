@@ -2,7 +2,7 @@
 
 ## Description
 
-Here's matrix multiply optimizatin examples.
+Here's matrix multiply optimization examples.
 
 - Cache
 - OpenMP
