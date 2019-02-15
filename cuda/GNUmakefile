@@ -21,7 +21,7 @@ NVCCWARNS = -Wall -Wno-deprecated-gpu-targets
 
 LDFLAGS   = 
 LIBS      = 
-INC       = -I./include -I/usr/local/cuda/include
+INCS      = -I./include -I/usr/local/cuda/include
 TARGET    = ./bin/$(shell basename $(shell dirname `readlink -f .`))
 
 SRCDIR    = ./src
@@ -46,11 +46,11 @@ $(TARGET): $(COBJS) $(NVCCOBJS) $(LIBS)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 	-mkdir -p $(OBJDIR)
-	$(CC) -o $@ -c $< $(INC) $(CFLAGS) $(CWARNS)
+	$(CC) -o $@ -c $< $(INCS) $(CFLAGS) $(CWARNS)
 
 $(OBJDIR)/%.device.o: $(SRCDIR)/%.cu
 	-mkdir -p $(OBJDIR)
-	$(NVCC) -o $@ -c $< $(INC) $(NVCCFLAGS) $(NVCCWARNS)
+	$(NVCC) -o $@ -c $< $(INCS) $(NVCCFLAGS) $(NVCCWARNS)
 
 all: clean $(TARGET)
 

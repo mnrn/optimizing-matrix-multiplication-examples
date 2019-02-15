@@ -10,81 +10,63 @@ constexpr std::size_t N = 1024;
 // 1つのブロックでBLOCK_SIZE x BLOCK_SIZEのスレッドを管理する
 constexpr std::size_t BLOCK_SIZE = 16;
 
-// 行列の要素の型を決定する
-using elem_t = double;
-
 // ホスト(CPU)側の行列を定義
-static elem_t h_A[N * N];
-static elem_t h_B[N * N];
-static elem_t h_C[N * N];
+static double hostMatrixA[N * N];
+static double hostMatrixB[N * N];
+static double hostMatrixC[N * N];
 
 // デバイス(GPU)側の行列へのポインタ
-static elem_t* d_A;
-static elem_t* d_B;
-static elem_t* d_C;
-
-// 高精度タイマー
-struct timer {
-public:
-    inline void start() { start_ = std::chrono::high_resolution_clock::now(); }
-    inline void end()   { end_   = std::chrono::high_resolution_clock::now(); }
-    inline std::chrono::duration<double> duration() const { return end_ - start_; }
-    inline double elapsed() const { return duration().count(); }
-
-private:
-    std::chrono::high_resolution_clock::time_point start_;
-    std::chrono::high_resolution_clock::time_point end_;
-};
+static double* deviceMatrixA;
+static double* deviceMatrixB;
+static double* deviceMatrixC;
 
 // 行列の積を計算する関数
-__global__ void matrix_multiply(elem_t*, elem_t*, elem_t*);
-__global__ void matrix_multiply_shared(elem_t*, elem_t*, elem_t*);
-
+__global__ void matrix_multiply(double*, double*, double*);
+__global__ void matrix_multiply_shared(double*, double*, double*);
 
 
 int main(void)
 {
     // デバイス側に行列用の記憶領域を確保する
-    cudaMalloc((void**)&d_A, sizeof(h_A));
-    cudaMalloc((void**)&d_B, sizeof(h_B));
-    cudaMalloc((void**)&d_C, sizeof(h_C));
+    cudaMalloc((void**)&deviceMatrixA, sizeof(hostMatrixA));
+    cudaMalloc((void**)&deviceMatrixB, sizeof(hostMatrixB));
+    cudaMalloc((void**)&deviceMatrixC, sizeof(hostMatrixC));
 
     // ホスト側の行列に値を設定する
     for (std::size_t i = 0; i < N * N; i++) {
-        h_A[i] = static_cast<elem_t>(i);
-        h_B[i] = static_cast<elem_t>(i);
-        h_C[i] = static_cast<elem_t>(0);
+        hostMatrixA[i] = static_cast<double>(i + 1);
+        hostMatrixB[i] = static_cast<double>(-i - 1);
+        hostMatrixC[i] = static_cast<double>(0);
     }
 
     // タイマー開始
-    timer t;
-    t.start();
+    auto start = std::chrono::high_resolution_clock::now();
 
     // ホスト側の行列のデータをデバイス側の行列へ転送する
-    cudaMemcpy(d_A, h_A, sizeof(h_A), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_B, h_B, sizeof(h_B), cudaMemcpyHostToDevice);
+    cudaMemcpy(deviceMatrixA, hostMatrixA, sizeof(hostMatrixA), cudaMemcpyHostToDevice);
+    cudaMemcpy(deviceMatrixB, hostMatrixB, sizeof(hostMatrixB), cudaMemcpyHostToDevice);
 
     // グリッドおよびブロックの定義
     dim3 grid(N / BLOCK_SIZE, N / BLOCK_SIZE);
     dim3 block(BLOCK_SIZE, BLOCK_SIZE);
 
     // GPU側の処理を起動させる
-    matrix_multiply <<< grid, block >>> (d_A, d_B, d_C);
+    matrix_multiply <<< grid, block >>> (deviceMatrixA, deviceMatrixB, deviceMatrixC);
 
-    // d_Cに格納されている計算結果をh_Cへ転送する
-    cudaMemcpy(h_C, d_C, sizeof(h_C), cudaMemcpyDeviceToHost);
+    // deviceMatrixCに格納されている計算結果をhostMatrixCへ転送する
+    cudaMemcpy(hostMatrixC, deviceMatrixC, sizeof(hostMatrixC), cudaMemcpyDeviceTohost);
 
     // タイマー終了
-    t.end();
+    auto end = std::chrono::high_resolution_clock::now();
 
     // 計算結果発表
-    std::cout << "device calculator time is " << t.elapsed() << " seconds." << std::endl;
-    std::cout << "device calculator result is " << h_C[N * N - 1] << "." << std::endl;
+    std::cout << "Calculator time is " << std::chrono::duration<double>(end - start).count() << " seconds." << std::endl;
+    std::cout << "Calculator result is " << std::setprecision(std::numeric_limits<double>::max_digits10) << hostMatrixC[N * N - 1] << "." << std::endl;
 
     // デバイス側の記憶領域を解放する
-    cudaFree(d_C);
-    cudaFree(d_B);
-    cudaFree(d_A);
+    cudaFree(deviceMatrixC);
+    cudaFree(deviceMatrixB);
+    cudaFree(deviceMatrixA);
 
     return 0;
 }
@@ -92,13 +74,13 @@ int main(void)
 
 
 // 行列の積を計算する関数
-__global__ void matrix_multiply(elem_t* A, elem_t* B, elem_t* C)
+__global__ void matrix_multiply(double* A, double* B, double* C)
 {
     // 各スレッドが担当する行列の行yと列xを取得
     std::size_t y = blockDim.y * blockIdx.y + threadIdx.y;
     std::size_t x = blockDim.x * blockIdx.x + threadIdx.x;
 
-    elem_t c = 0;
+    double c = 0;
     for (std::size_t i = 0; i < N; i++) {
         c += A[N * y + i] * B[N * i + x];
     }
@@ -107,16 +89,16 @@ __global__ void matrix_multiply(elem_t* A, elem_t* B, elem_t* C)
 
 
 // シェアードメモリを利用した行列積計算関数
-__global__ void matrix_multiply_shared(elem_t* A, elem_t* B, elem_t* C)
+__global__ void matrix_multiply_shared(double* A, double* B, double* C)
 {
     // 各スレッドが担当する行列の行yと列xを取得
     std::size_t y = blockDim.y * blockIdx.y + threadIdx.y;
     std::size_t x = blockDim.x * blockIdx.x + threadIdx.x;
 
-    __shared__ elem_t s_A[BLOCK_SIZE][BLOCK_SIZE];
-    __shared__ elem_t s_B[BLOCK_SIZE][BLOCK_SIZE];
+    __shared__ double s_A[BLOCK_SIZE][BLOCK_SIZE];
+    __shared__ double s_B[BLOCK_SIZE][BLOCK_SIZE];
 
-    elem_t c = 0;
+    double c = 0;
     for (std::size_t i = 0; i < N; i += BLOCK_SIZE) {
 
         // シェアードメモリに行列の一部をコピー

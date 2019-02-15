@@ -12,8 +12,8 @@
 
 CC      = g++
 
-CFLAGS  = -march=native -mtune=native -fopenmp -std=c++1z -O3 -MMD -MP
-WARNS   = -Wall -Wextra -Wconversion -Wdisabled-optimization -Wfloat-equal -Winline -Wreorder
+CFLAGS  = -march=native -mtune=native -fopenmp -std=c++17 -O3 -MMD -MP
+WARNS   = -Wall -Wextra -Wconversion -Wdisabled-optimization -Wfloat-equal -Winline -Wreorder -Winline
 
 LDFLAGS = -fopenmp 
 LIBS    =
